@@ -428,6 +428,9 @@ class DirectoryLister {
                 if (is_dir($realPath)) {
                     $iconClass = 'fa-folder';
                     $sort = 1;
+                    if (!$this->_isBrowseDir($realPath)) {
+                        $iconClass = 'fa-bookmark';
+                    }
                 } else {
                     // Get file extension
                     $fileExt = strtolower(pathinfo($realPath, PATHINFO_EXTENSION));
@@ -470,11 +473,11 @@ class DirectoryLister {
                     // Add all non-hidden files to the array
                     if ($this->_directory != '.' || $file != 'index.php') {
 
+                        $urlPath = implode('/', array_map(rawurlencode, explode("/", $relativePath)));
+
                         // Build the file path
-                        if (is_dir($relativePath)) {
+                        if (is_dir($relativePath) && $this->_isBrowseDir($relativePath)) {
                             $urlPath = '?dir=' . rawurlencode($relativePath);
-                        } else {
-                            $urlPath = rawurlencode($relativePath);
                         }
 
                         // Add the info to the main array
@@ -632,6 +635,29 @@ class DirectoryLister {
         }
 
         return false;
+
+    }
+
+    /**
+     * Determines if a file is specified as a browsed subdirectory (no index)
+     *
+     * @param string $dirPath Path to directory to be checked for an index
+     * @return boolean Returns false if directory has a valid index file, true if not
+     * @access protected
+     */
+    protected function _isBrowseDir($dirPath) {
+        // Check directory for each index file name.
+        foreach ($this->_config['index_files'] as $indexFile) {
+
+            if (file_exists(implode('/', array($dirPath, $indexFile)))) {
+
+                return false;
+
+            }
+
+        }
+
+        return true;
 
     }
 

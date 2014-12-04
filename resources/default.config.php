@@ -13,7 +13,17 @@ return array(
         '*/.ht*',
         'resources',
         'resources/*',
-        'analytics.inc'
+        'analytics.inc',
+        'header.php',
+        'footer.php'
+    ),
+
+    // Files that, if present in a directory, make the directory a direct link
+    // rather than a browse link.
+    'index_files' => array(
+        'index.htm',
+        'index.html',
+        'index.php'
     ),
 
     // File hashing threshold
